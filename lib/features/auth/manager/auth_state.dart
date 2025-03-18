@@ -1,17 +1,26 @@
-import 'package:update_to_do_app/features/auth/data/model/user_model.dart';
-
 abstract class AuthState {}
 
-class AuthInitial extends AuthState {}
+class AuthInitialState extends AuthState {}
 
-class AuthLoading extends AuthState {}
+// Register States
+class AuthRegisterLoading extends AuthState {}
 
-class AuthSuccess extends AuthState {
-  final UserModel user;
-  AuthSuccess(this.user);
+class AuthRegisterSuccess extends AuthState {
+  final String msg;
+  AuthRegisterSuccess({required this.msg});
 }
 
-class AuthFailure extends AuthState {
+class AuthRegisterError extends AuthState {
   final String error;
-  AuthFailure(this.error);
+  AuthRegisterError({required this.error});
+}
+
+// Login States
+class AuthLoginLoading extends AuthState {}
+
+class AuthLoginSuccess extends AuthState {}
+
+class AuthLoginError extends AuthState {
+  final String error;
+  AuthLoginError({required this.error});
 }

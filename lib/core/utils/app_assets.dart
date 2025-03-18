@@ -13,5 +13,6 @@ abstract class AppAssets {
   static const String switchIcon = '${baseIconAssetsPath}Switch.svg';
   static const String checkBox = '${baseIconAssetsPath}checkBox.svg';
   static const String addIcon = '${baseIconAssetsPath}add_icon.svg';
-  static const String splashLogo = '${baseIconAssetsPath}splash.svg';
+  static const String splashLogo = '${baseImageAssetsPath}splash.png';
+  static const String lockIcon = '${baseIconAssetsPath}lock_icon.svg';
 }
