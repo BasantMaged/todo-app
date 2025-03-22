@@ -1,9 +1,13 @@
 import 'package:dartz/dartz.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:update_to_do_app/core/local/local_data.dart';
 import 'package:update_to_do_app/core/network/dio_helper.dart';
 import 'package:update_to_do_app/core/network/dio_responce.dart';
 import 'package:update_to_do_app/core/network/end_points.dart';
 import 'package:update_to_do_app/features/auth/data/model/user_model.dart';
+import 'package:update_to_do_app/features/auth/view/login_view.dart';
 
 class AuthRepo {
   AuthRepo._internal(); // Private constructor
@@ -25,7 +29,6 @@ class AuthRepo {
         isAuthorized: false,
       );
       print("Register Response: ${apiResponse.data}"); // Debugging
-
 
       return apiResponse.status
           ? Right(apiResponse.message)
@@ -56,9 +59,12 @@ class AuthRepo {
           return Left(apiResponse.message);
         }
 
-        // Store Tokens in Local Storage
-        LocalData.accessToken = authResponse.accessToken;
-        LocalData.refreshToken = authResponse.refreshToken;
+        // Save user data in LocalData & SharedPreferences
+        await LocalData.saveUserData(
+          token: authResponse.accessToken ?? "",
+          refresh: authResponse.refreshToken ?? "",
+          username: authResponse.user!.username ?? '',
+        );
 
         return Right(authResponse.user!);
       } else {

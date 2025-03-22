@@ -15,7 +15,7 @@ class APIHelper {
   final Dio dio = Dio(
     BaseOptions(
       baseUrl: EndPoints.baseUrl,
-      connectTimeout: Duration(seconds: 10),
+      connectTimeout: Duration(seconds: 20),
       sendTimeout: Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
       followRedirects: true, //  Enable automatic redirects

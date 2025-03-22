@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:update_to_do_app/core/local/local_data.dart';
 import 'package:update_to_do_app/features/auth/data/model/user_model.dart';
 import 'package:update_to_do_app/features/auth/data/repo/auth_repo.dart';
@@ -51,11 +52,20 @@ class AuthCubit extends Cubit<AuthState> {
       password: passwordController.text,
     );
 
-    response.fold((String error) => emit(AuthLoginError(error: error)), (
-      UserModel user,
-    ) {
-      LocalData.userName = user.username; // Store username in Singleton
-      emit(AuthLoginSuccess());
-    });
+    response.fold(
+      (String error) {
+        emit(AuthLoginError(error: error));
+      },
+      (UserModel user) async {
+        LocalData.userName = user.username; // Store username in Singleton
+
+        // Store User Data in SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("accessToken", LocalData.accessToken ?? "");
+        await prefs.setString("username", user.username ?? "");
+
+        emit(AuthLoginSuccess());
+      },
+    );
   }
 }

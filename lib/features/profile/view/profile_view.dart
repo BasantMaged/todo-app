@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:update_to_do_app/core/utils/app_assets.dart';
+import 'package:get/get.dart';
 import 'package:update_to_do_app/core/local/local_data.dart';
+import 'package:update_to_do_app/core/utils/app_assets.dart';
+import 'package:update_to_do_app/features/auth/view/login_view.dart';
+import 'package:update_to_do_app/features/profile/view/change_password_view.dart';
+import 'package:update_to_do_app/features/profile/view/settings_view.dart';
+import 'package:update_to_do_app/features/profile/view/update_profile_view.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -36,22 +41,66 @@ class ProfileScreen extends StatelessWidget {
             ProfileOption(
               icon: AppAssets.profileIcon,
               title: "Update Profile",
-              onTap: () {},
+              onTap: () {
+                Get.to(() => ProfileUpdateView());
+              },
             ),
             ProfileOption(
               icon: AppAssets.lockIcon,
               title: "Change Password",
-              onTap: () {},
+              onTap: () {
+                Get.to(() => ChangePasswordView());
+              },
             ),
             ProfileOption(
               icon: AppAssets.settingIcon,
               title: "Settings",
-              onTap: () {},
+              onTap: () {
+                Get.to(() => const SettingsView());
+              },
+            ),
+
+            const Spacer(),
+
+            // Logout Button
+            ProfileOption(
+              icon: AppAssets.lockIcon,
+              title: "Logout",
+              onTap: () async {
+                bool confirmLogout = await showLogoutDialog(context);
+                if (confirmLogout) {
+                  await LocalData.clear();
+                  Get.offAll(() => LoginView());
+                }
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<bool> showLogoutDialog(BuildContext context) async {
+    return await Get.dialog(
+          AlertDialog(
+            title: const Text("Logout"),
+            content: const Text("Are you sure you want to logout?"),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(result: false),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => Get.back(result: true),
+                child: const Text(
+                  "Logout",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 }
 

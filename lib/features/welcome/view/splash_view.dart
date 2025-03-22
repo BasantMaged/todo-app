@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:update_to_do_app/core/constants/app_constants.dart';
+import 'package:update_to_do_app/core/local/local_data.dart';
 import 'package:update_to_do_app/core/utils/app_assets.dart';
 import 'package:update_to_do_app/core/utils/app_sizes.dart';
-import 'package:update_to_do_app/core/helper/my_navigator.dart';
 import 'package:update_to_do_app/features/welcome/view/welcome_view.dart';
+import 'package:update_to_do_app/features/home/view/home_view.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 3), () {
-      // ignore: use_build_context_synchronously
-      MyNavigator.navigateTo(context, WelcomeScreen());
-    });
+    _navigateToNextScreen();
 
     return Scaffold(
       body: Column(
@@ -30,53 +30,24 @@ class SplashScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-  
-  
+  void _navigateToNextScreen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('access_token');
+    print("Stored Token: $token"); // Debugging
+    // Check login state
 
+    Future.delayed(const Duration(seconds: 3), () {
+      if (token != null && token.isNotEmpty) {
+        print("Navigating to Home Screen");
+        Get.offAll(
+          () => HomeView(userName: LocalData.userName ?? "Guest"),
+        ); // Navigate to Home if logged in
+      } else {
+        print("Navigating to Welcome Screen");
 
-
-/*import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:update_to_do_app/core/utils/app_assets.dart';
-import 'package:update_to_do_app/features/welcome/view/welcome_view.dart';
-
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Wait for 3 seconds and navigate to WelcomeScreen
-    Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-        );
+        Get.offAll(() => WelcomeScreen()); // Otherwise, go to WelcomeScreen
       }
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Image.asset(
-          AppAssets.splashLogo, // Ensure this path is correct
-
-          fit: BoxFit.contain,
-        ),
-      ),
-    );
-  }
 }
-*/
-
-
-
